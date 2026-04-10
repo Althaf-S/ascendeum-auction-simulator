@@ -10,6 +10,7 @@ This project implements a **high-performance auction simulator** in Go that:
 
 * Runs **40 auctions concurrently**
 * Simulates **up to 100 bidders per auction**
+* Simulates each bidder could **place multiple bids**
 * Uses **timeout-driven auction closure**
 * Sleep mechanism simulates network latency and bidder decision time based on auction attributes
 * Determines winners based on **highest valid bid**

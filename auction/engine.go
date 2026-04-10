@@ -74,6 +74,7 @@ func RunAuction(a models.Auction) models.Result {
 			// a specific metric (current heap allocation) as uint64
 			res.MemoryBefore = memoryBefore.Alloc
 			res.MemoryAfter = memoryAfter.Alloc
+			res.TotalBidders = numOfBidders
 
 			return res
 		}

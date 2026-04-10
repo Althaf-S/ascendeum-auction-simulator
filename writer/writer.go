@@ -33,6 +33,7 @@ func WriteAuctionResult(res models.Result) error {
 		Winner ID: %d
 		Winning Amount: %.2f
 		Total Bids: %d
+		Total Bidders: %d
 
 		Start Time: %s
 		End Time: %s
@@ -45,6 +46,7 @@ func WriteAuctionResult(res models.Result) error {
 		res.WinnerID,
 		res.Amount,
 		res.TotalBids,
+		res.TotalBidders,
 		res.StartTime.Format(time.RFC3339),
 		res.EndTime.Format(time.RFC3339),
 		res.EndTime.Sub(res.StartTime),

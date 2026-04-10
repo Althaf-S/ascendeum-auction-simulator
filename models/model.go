@@ -17,10 +17,11 @@ type Bid struct {
 }
 
 type Result struct {
-	AuctionID int
-	WinnerID  int
-	Amount    float64
-	TotalBids int
+	AuctionID    int
+	WinnerID     int
+	Amount       float64
+	TotalBidders int
+	TotalBids    int
 
 	StartTime time.Time
 	EndTime   time.Time
