@@ -5,9 +5,11 @@ import (
 	"math/rand"
 	"runtime"
 	"time"
+
+	"ascendeum-auction-simulator/models"
 )
 
-func RunAuction(a Auction) Result {
+func RunAuction(a models.Auction) models.Result {
 
 	startTime := time.Now()
 
@@ -23,13 +25,14 @@ func RunAuction(a Auction) Result {
 	numOfBidders := rand.Intn(100) + 1
 
 	//Buffered channel to handle burst bids (some send bids at same moment)
-	bidCh := make(chan Bid, numOfBidders) // range is 'numOfBidders' since simulation, not in real world  case
+	bidCh := make(chan models.Bid, numOfBidders) // range is 'numOfBidders' since simulation, not in real world  case
 
-	var bids []Bid
+	var bids []models.Bid
 
 	for i := 0; i < numOfBidders; i++ {
 		bidderID := i + 1
-
+		// Could introduce semaphore based workerpool when the resource constraints are too
+		// tight to standardize resources much w.r.t vCPU
 		go func(id int) {
 			if rand.Float64() < 0.3 { //30% chance a bidder won't bid
 				return
@@ -39,7 +42,7 @@ func RunAuction(a Auction) Result {
 				// random delay between bids mimics network and other constraints, min 50ms
 				time.Sleep(time.Millisecond * time.Duration(50+rand.Intn(200)))
 
-				bid := Bid{
+				bid := models.Bid{
 					BidderID: id,
 					Amount:   float64(100 + rand.Intn(900)), // 100 to 999 amount
 					Time:     time.Now(),
@@ -78,7 +81,7 @@ func RunAuction(a Auction) Result {
 
 }
 
-func decideWinner(auctionID int, bids []Bid) Result {
+func decideWinner(auctionID int, bids []models.Bid) models.Result {
 	var maxBid float64
 
 	// winnerID set as -1 because its a sentinal value as we set bidder ID as int for
@@ -93,7 +96,7 @@ func decideWinner(auctionID int, bids []Bid) Result {
 		}
 	}
 
-	return Result{
+	return models.Result{
 		AuctionID: auctionID,
 		WinnerID:  winnerId,
 		Amount:    maxBid,

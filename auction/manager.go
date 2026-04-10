@@ -1,20 +1,19 @@
 package auction
 
 import (
-	"fmt"
 	"math/rand"
 	"sync"
 	"time"
+
+	"ascendeum-auction-simulator/models"
 )
 
-func ManageAuctions() []Result {
+func ManageAuctions() []models.Result {
 
 	var wg sync.WaitGroup
 
 	numOfAuction := 40
-	resultsCh := make(chan Result, numOfAuction)
-
-	startTime := time.Now()
+	resultsCh := make(chan models.Result, numOfAuction)
 
 	for i := 0; i < numOfAuction; i++ {
 		wg.Add(1)
@@ -22,9 +21,9 @@ func ManageAuctions() []Result {
 		go func(id int) {
 			defer wg.Done()
 
-			auction := Auction{
+			auction := models.Auction{
 				ID: id,
-				Attributes: Attribute{
+				Attributes: models.Attribute{
 					"demand": rand.Intn(100),
 					"value":  rand.Intn(100),
 				},
@@ -42,15 +41,10 @@ func ManageAuctions() []Result {
 		close(resultsCh)
 	}()
 
-	results := make([]Result, 0, numOfAuction)
+	results := make([]models.Result, 0, numOfAuction)
 	for res := range resultsCh {
 		results = append(results, res)
 	}
-
-	endTime := time.Now()
-
-	totalTime := endTime.Sub(startTime)
-	fmt.Println("Total execution time from start of first auction and end of last auction", totalTime)
 
 	return results
 }
