@@ -2,6 +2,7 @@ package auction
 
 import (
 	"context"
+	"math/rand"
 	"runtime"
 	"time"
 )
@@ -17,16 +18,45 @@ func RunAuction(a Auction) Result {
 	ctx, cancel := context.WithTimeout(context.Background(), a.Timeout)
 	defer cancel()
 
-	//Buffered channel to handle burst bids (all send bids at same moment)
-	bidch := make(chan Bid, 100)
+	// Biding simulation
+
+	numOfBidders := rand.Intn(100) + 1
+
+	//Buffered channel to handle burst bids (some send bids at same moment)
+	bidCh := make(chan Bid, numOfBidders) // range is 'numOfBidders' since simulation, not in real world  case
 
 	var bids []Bid
 
-	// TODO : bid simulation
+	for i := 0; i < numOfBidders; i++ {
+		bidderID := i + 1
+
+		go func(id int) {
+			if rand.Float64() < 0.3 { //30% chance a bidder won't bid
+				return
+			}
+
+			for { //simulates same bidder bidding multiple times
+				// random delay between bids mimics network and other constraints, min 50ms
+				time.Sleep(time.Millisecond * time.Duration(50+rand.Intn(200)))
+
+				bid := Bid{
+					BidderID: id,
+					Amount:   float64(100 + rand.Intn(900)), // 100 to 999 amount
+					Time:     time.Now(),
+				}
+
+				select { // safe send, will stop at timeout
+				case bidCh <- bid:
+				case <-ctx.Done():
+					return
+				}
+			}
+		}(bidderID)
+	}
 
 	for {
 		select {
-		case bid := <-bidch:
+		case bid := <-bidCh:
 			bids = append(bids, bid)
 		case <-ctx.Done():
 			endTime := time.Now()
