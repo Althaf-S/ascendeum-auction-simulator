@@ -17,7 +17,7 @@ This project implements a **high-performance auction simulator** in Go that:
 * Measures **execution time and memory usage**
 * Writes results to files for analysis
 
-This system is designed to balance **concurrency, correctness, and resource awareness** without over-engineering.
+The system was designed to balance **simplicity, correctness, and concurrency** without over-engineering. Trade-offs were made consciously to keep the implementation readable while still demonstrating **resource awareness**.
 
 ---
 
